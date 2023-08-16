@@ -87,9 +87,6 @@ input{
   padding: 0;
 }
 
-.dndnode .react-flow__handle {
-  /* Your existing handle styles */
-}
 
 /* Adjust the position of the editable name placeholder */
 .dndnode input {

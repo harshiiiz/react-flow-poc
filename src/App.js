@@ -7,7 +7,7 @@ import ReactFlow, {
   Panel,
   Background,
   MiniMap,
-  Handle,
+
   Position,
 } from "reactflow";
 import TextUpdaterNode from "./TextUpdaterNode.js";
@@ -146,7 +146,7 @@ function Flow() {
       }
       setNodes((nds) => nds.concat(newNode));
     },
-    [reactFlowInstance]
+    [reactFlowInstance,setNodes]
   );
 
   const onNodeContextMenu = useCallback(
