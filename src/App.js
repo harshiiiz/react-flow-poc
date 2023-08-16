@@ -4,7 +4,6 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
   ReactFlowProvider,
-  Controls,
   Panel,
   Background,
   MiniMap,
@@ -21,8 +20,7 @@ import { initialNodes, initialEdges } from "./nodes-edges";
 import CircleNode from "./shapes/CircleNode.js";
 import PentagonNode from "./shapes/PentagonNode.js";
 import DiamondNode from "./shapes/DiamondNode";
-import { Box, Button, Flex, IconButton, Tooltip, useDisclosure } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import {  Button, Flex,  Tooltip,  } from "@chakra-ui/react";
 import GroupNode from "./shapes/GroupNode.js";
 const nodeTypes = {
   textUpdater: TextUpdaterNode,
@@ -41,8 +39,7 @@ function Flow() {
   const reactFlowWrapper = useRef(null);
   const [menu, setMenu] = useState(null);
 
-  const [handleType1, setHandleType1] = useState("target");
-  const [handleType2, setHandleType2] = useState("target");
+  
   const lastNodePosition = useRef({ x: 0, y: 0 });
   let id = 0;
 
@@ -172,22 +169,7 @@ function Flow() {
     [setMenu]
   );
 
-  const onClick = useCallback(() => {
-    const newNode = {
-      id: `${++id}`,
-      data: { label: getId() },
-      position: {
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-      },
-      type: "triangle",
-      style: {
-        background: "#2B6CB0",
-        color: "white",
-      },
-    };
-    setNodes((nds) => nds.concat(newNode));
-  }, [setNodes]);
+ 
   const onEdgeClick = useCallback(
     (event, edge) => {
       const updatedEdges = edges.map((e) =>
@@ -263,9 +245,7 @@ function Flow() {
     [nodes, setNodes]
   );
 
-  const onGroupNodeDragStart = (event) => {
-    event.dataTransfer.setData("application/reactflow", "group"); // Set data type for group node
-  };
+  
   const addNode = useCallback(
     (type = "default") => {
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();

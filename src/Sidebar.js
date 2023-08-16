@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React  from 'react';
 import CircleNode from './shapes/CircleNode';
-import { Button, Flex, IconButton } from '@chakra-ui/react';
+import {  Flex } from '@chakra-ui/react';
 import PentagonNode from './shapes/PentagonNode';
 import DiamondNode from './shapes/DiamondNode';
 
-function Sidebar({ onSelectNodes }) {
+function Sidebar() {
   
 
   const onDragStart = (event, nodeType) => {

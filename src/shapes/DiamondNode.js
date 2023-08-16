@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import { Box,  Textarea } from '@chakra-ui/react';
-import { ChevronLeftIcon,ChevronRightIcon } from '@chakra-ui/icons';
+
 
 function DiamondNode({ id, onDragStart,data }) {
   const [nodeName, setNodeName] = useState(data?.label||"");
