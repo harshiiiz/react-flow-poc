@@ -193,7 +193,7 @@ function Flow() {
   const onPaneClick = useCallback(() => setMenu(null), [setMenu]);
 
   useEffect(() => {
-    console.log(nodes, edges, Handle);
+    console.log(nodes, edges);
   }, [nodes, edges]);
 
   const handleDragEnd = useCallback(
@@ -304,7 +304,7 @@ function Flow() {
                 
                 className="draggable-button"
                 onClick={() => addNode("group")}
-                onNodeDragStop={handleDragEnd}
+                
                 w={"100px"}
                
               >
