@@ -1,4 +1,4 @@
-import ReactFlow, { Background, MarkerType } from 'reactflow';
+
 
 
 export const initialNodes = [
@@ -36,5 +36,7 @@ export const initialNodes = [
     // },
   ];
   
-  export default { initialNodes, initialEdges };
+  const exportedData = { initialNodes, initialEdges };
+
+  export default exportedData;
   
