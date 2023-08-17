@@ -297,27 +297,9 @@ function Flow() {
 
   return (
     <>
-      <div style={{ width: "100%", height: "75vh" }} ref={reactFlowWrapper}>
+     
       <ReactFlowProvider>
-      <Flex direction="column" >
-              <Sidebar />
-              <Tooltip label="Click me" aria-label="Click me tooltip">
-              <Button
-                
-                className="draggable-button"
-                onClick={() => addNode("group")}
-                
-                w={"100px"}
-               
-              >
-                Group Node
-              </Button>
-              </Tooltip>
-              {/* <button className="btn-add" onClick={onClick}>
-              Add Node
-            </button> */}
-              {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
-            </Flex>
+      <div style={{ width: "100%", height: "100vh" }} ref={reactFlowWrapper}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -387,13 +369,31 @@ function Flow() {
           <Background />
           <MiniMap />
           <Panel>
-            
+          <Flex direction="column" >
+              <Sidebar />
+              <Tooltip label="Click me" aria-label="Click me tooltip">
+              <Button
+                
+                className="draggable-button"
+                onClick={() => addNode("group")}
+                
+                w={"100px"}
+               
+              >
+                Group Node
+              </Button>
+              </Tooltip>
+              {/* <button className="btn-add" onClick={onClick}>
+              Add Node
+            </button> */}
+              {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
+            </Flex>
           </Panel>
         </ReactFlow>
-        
+        </div>
           
         </ReactFlowProvider>
-      </div>
+      
     </>
   );
 }
