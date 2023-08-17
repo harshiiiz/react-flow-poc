@@ -314,6 +314,7 @@ function Flow() {
           onPaneClick={onPaneClick}
           onEdgeClick={onEdgeClick}
           onNodeDragStop={handleDragEnd}
+          connectionMode='loose'
         >
           {edges.map((edge) => (
             <React.Fragment key={`label-${edge.id}`}>

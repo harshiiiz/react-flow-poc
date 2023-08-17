@@ -8,8 +8,8 @@ function CircleNode({ id, onDragStart, data }) {
   const [nodeName, setNodeName] = useState(data?.label||"");
   return (
     <>
-    <Handle type="target" position={Position.Left}  id='1'/>
-    <Handle type="target" position={Position.Top}  id='2'/>
+    <Handle type="source" position={Position.Top} id='a'/>
+    <Handle type="source" position={Position.Left} id='b'/>
     <div className="dndnode circle" onDragStart={(event) => onDragStart(event, 'circle')} draggable>
     <Box position="relative">
           <Textarea
@@ -37,8 +37,8 @@ function CircleNode({ id, onDragStart, data }) {
         </Box>
     {/* {data?.label} */}
     </div>
-    <Handle type="source" position={Position.Right} id='3'/>
-    <Handle type="source" position={Position.Bottom} id='4'/>
+    <Handle type="source" position={Position.Right} id='c'/>
+    <Handle type="source" position={Position.Bottom} id='d'/>
     
   </>
   );
