@@ -43,7 +43,8 @@ function Flow() {
   const lastNodePosition = useRef({ x: 0, y: 0 });
   let id = 0;
 
-  const getId = () => `${id++}`;
+ 
+  
   const onConnect = useCallback(
     (params) => {
       const edgeWithArrow = {
@@ -68,6 +69,7 @@ function Flow() {
 
   const onDrop = useCallback(
     (event) => {
+      const getId = () => `${id++}`;
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
@@ -146,7 +148,7 @@ function Flow() {
       }
       setNodes((nds) => nds.concat(newNode));
     },
-    [reactFlowInstance,setNodes]
+    [reactFlowInstance,setNodes,id]
   );
 
   const onNodeContextMenu = useCallback(
