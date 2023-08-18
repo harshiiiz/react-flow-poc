@@ -1,17 +1,12 @@
-// CircleNode.js
 import React, { useState } from 'react';
-import { Handle, NodeResizer, Position } from 'reactflow';
-import { Box,  Textarea } from '@chakra-ui/react';
+import { Handle, Position } from 'reactflow';
 
-function CircleNode({ id, onDragStart, data }) {
- 
+import { Box,  Textarea } from '@chakra-ui/react';
+function ParallelogramNode({ id, onDragStart,data }) {
   const [nodeName, setNodeName] = useState(data?.label||"");
   return (
     <>
-    
-    <Handle type="source" position={Position.Top} id='a'/>
-    <Handle type="source" position={Position.Left} id='b'/>
-    <div className="dndnode circle" onDragStart={(event) => onDragStart(event, 'circle')} draggable>
+    <div className="dndnode parallelogram" onDragStart={(event) => onDragStart(event, 'parallelogram')} draggable>
     <Box position="relative">
           <Textarea
             value={nodeName}
@@ -25,7 +20,7 @@ function CircleNode({ id, onDragStart, data }) {
             textAlign="center"
             position="absolute"
             left="50%"
-            top="70%"
+            top="120%"
             transform="translate(-50%, -50%)"
            w={'80px'}
            wordwrap="break-word"
@@ -33,16 +28,17 @@ function CircleNode({ id, onDragStart, data }) {
             wordBreak={"break-all"}
             isDisabled={!data?.editable}
             color={'white'}
-            paddingTop={'1.8rem'}
+            paddingTop={'6rem'}
           />
         </Box>
-    {/* {data?.label} */}
+      
     </div>
-    <Handle type="source" position={Position.Right} id='c'/>
-    <Handle type="source" position={Position.Bottom} id='d'/>
-    
-  </>
+    <Handle type="source" position={Position.Top} id='1'/>
+    <Handle type="source" position={Position.Left} id='2'/>
+    <Handle type="source" position={Position.Right} id='3'/>
+    <Handle type="source" position={Position.Bottom} id='4'/>
+    </>
   );
 }
 
-export default CircleNode;
+export default ParallelogramNode;

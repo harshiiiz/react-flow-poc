@@ -9,27 +9,31 @@ import ReactFlow, {
   MiniMap,
 
   Position,
+  
 } from "reactflow";
-import TextUpdaterNode from "./TextUpdaterNode.js";
+
 import "reactflow/dist/style.css";
 import Sidebar from "./Sidebar.js";
-import ResizableNodeSelected from "./ResizableNodeSelected";
-import ColorSelectorNode from "./ColorSelectorNode";
+
 import ContextMenu from "./ContextMenu";
 import { initialNodes, initialEdges } from "./nodes-edges";
 import CircleNode from "./shapes/CircleNode.js";
 import PentagonNode from "./shapes/PentagonNode.js";
 import DiamondNode from "./shapes/DiamondNode";
-import {  Button, Flex,  Tooltip,  } from "@chakra-ui/react";
+import {  Button, Flex,    Tooltip,  } from "@chakra-ui/react";
 import GroupNode from "./shapes/GroupNode.js";
+import RectangleNode from './shapes/RectangleNode';
+import ParallelogramNode from './shapes/ParallelogramNode';
 const nodeTypes = {
-  textUpdater: TextUpdaterNode,
-  ResizableNodeSelected,
-  selectorNode: ColorSelectorNode,
+  
+
+  
   circle: CircleNode,
   pentagon: PentagonNode,
   diamond: DiamondNode,
   group: GroupNode,
+  rectangle: RectangleNode,
+  parallelogram: ParallelogramNode,
 };
 
 function Flow() {
@@ -38,7 +42,6 @@ function Flow() {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const reactFlowWrapper = useRef(null);
   const [menu, setMenu] = useState(null);
-
   
   const lastNodePosition = useRef({ x: 0, y: 0 });
   let id = 0;
@@ -49,8 +52,9 @@ function Flow() {
     (params) => {
       const edgeWithArrow = {
         ...params,
+        type:"step",
         markerEnd: { type: "arrowclosed", color: "black" },
-        label: "Label Text",
+        label: "Text",
         showLabel: false,
         labelPosition: {
           x: (params.sourceX + params.targetX) / 2,
@@ -88,7 +92,7 @@ function Flow() {
       if (type === "circle") {
         newNode = {
           id: getId(),
-          type: "circle", // Use the correct type based on your nodeTypes
+          type: "circle", 
           position,
           fontSize: 12,
           data: {
@@ -98,7 +102,7 @@ function Flow() {
           },
           style: {
             borderRadius: "50%",
-            // ... (other style properties)
+           
           },
         };
       } else if (type === "rectangle") {
@@ -107,7 +111,7 @@ function Flow() {
           type: "rectangle", // Use the correct type based on your nodeTypes
           position,
           fontSize: 12,
-          data: { label: "Rectangle node" },
+          data: { label: "title", editable: true },
           style: {
             // ... (style properties for rectangle)
           },
@@ -134,15 +138,26 @@ function Flow() {
             // ... (style properties for rectangle)
           },
         };
-      } else if (type === "group") {
+      }
+      else if (type === "parallelogram") {
         newNode = {
           id: getId(),
-          type: "group", // Use the correct type based on your nodeTypes
+          type: "parallelogram", // Use the correct type based on your nodeTypes
+          position,
+          fontSize: 12,
+          data: { label: "title", editable: true },
+          style: {
+            // ... (style properties for rectangle)
+          },
+        };} else if (type === "group") {
+        newNode = {
+          id: getId(),
+          type: "group", 
           position,
           fontSize: 12,
           data: { label: "Group node", nodes: [], edges: [] },
           style: {
-            // ... (style properties for rectangle)
+           
           },
         };
       }
@@ -246,8 +261,30 @@ function Flow() {
     },
     [nodes, setNodes]
   );
+  const flowKey = 'example-flow';
+  const onSave = useCallback(() => {
+    console.log("save",reactFlowInstance)
+        if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      console.log((flow),reactFlowInstance)
+      localStorage.setItem(flowKey, JSON.stringify(flow));
+    }
+  }, [reactFlowInstance]);
+  const onRestore = useCallback(() => {
+    const restoreFlow = async () => {
+      const flow = JSON.parse(localStorage.getItem(flowKey));
+      console.log(flow)
 
-  
+      if (flow) {
+        
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        
+      }
+    };
+
+    restoreFlow();
+  }, [setNodes,setEdges]);
   const addNode = useCallback(
     (type = "default") => {
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
@@ -279,8 +316,22 @@ function Flow() {
         };
         if (type === "group") {
           Object.assign(newNode, {
-            type,
-            //data: { ...newNode.data, onResize: setHeightWithOfGroup(newNode.id) },
+             type,
+            // data: { ...newNode.data, onResize: (size) => {
+            //   // Update the size of the GroupNode here
+            //   setNodes((prevNodes) => {
+            //     return prevNodes.map((nds) => {
+            //       if (nds.id === newNode.id) {
+            //         nds.style = {
+            //           ...nds.style,
+            //           width: size.width,
+            //           height: size.height,
+            //         };
+            //       }
+            //       return nds;
+            //     });
+            //   });}, 
+            // },
             style: {
               width: 500,
               height: 300,
@@ -370,8 +421,9 @@ function Flow() {
           <Background />
           <MiniMap />
           <Panel>
-          <Flex direction="column" >
+          <Flex direction="column" gap={2} >
               <Sidebar />
+              <Flex gap={2}>
               <Tooltip label="Click me" aria-label="Click me tooltip">
               <Button
                 
@@ -384,6 +436,10 @@ function Flow() {
                 Group Node
               </Button>
               </Tooltip>
+              
+              <Button onClick={onSave} w={"100px"} >save</Button>
+              <Button onClick={onRestore} w={"100px"}>restore</Button>
+              </Flex>
               {/* <button className="btn-add" onClick={onClick}>
               Add Node
             </button> */}

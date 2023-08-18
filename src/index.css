@@ -24,7 +24,9 @@ input{
 .dndnode.pentagon,
 .dndnode.square,
 .dndnode.circle,
-.dndnode.diamond {
+.dndnode.diamond ,
+.dndnode.rectangle,
+.dndnode.parallelogram {
   cursor: grab;
   padding: 10px;
   border: 1px solid #ccc;
@@ -40,6 +42,19 @@ input{
   height: 100px;
   clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
   background: rgb(89, 60, 163);
+}
+.dndnode.rectangle {
+  width: 100px;
+  height: 100px;
+  
+  background: rgb(89, 60, 163);
+}
+.dndnode.parallelogram{
+  width: 100px;
+	height: 100px;
+	transform: skew(-20deg);
+  background: rgb(89, 60, 163);
+
 }
 
 /* Specific styles for square node */
@@ -93,9 +108,7 @@ input{
   transform: translate(-50%, -50%);
 }
 .draggable-button {
-  position: absolute;
-  top: 20px;
-  left: 20px;
+
   background-color: lightblue;
   padding: 6px 12px;
   border: none;
@@ -113,3 +126,5 @@ input{
 
   overflow: hidden;
 }
+
+
