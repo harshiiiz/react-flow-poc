@@ -1,6 +1,6 @@
 // CircleNode.js
 import React, { useState } from 'react';
-import { Handle, NodeResizer, Position } from 'reactflow';
+import { Handle,  Position } from 'reactflow';
 import { Box,  Textarea } from '@chakra-ui/react';
 
 function CircleNode({ id, onDragStart, data }) {

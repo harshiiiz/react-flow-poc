@@ -1,8 +1,7 @@
 
-import React, { useEffect, useState, useRef } from 'react';
-import { Handle, Position, useUpdateNodeInternals, NodeResizer } from 'reactflow';
-import { drag } from 'd3-drag';
-import { select } from 'd3-selection';
+import React from 'react';
+import { Handle, Position, NodeResizer } from 'reactflow';
+
 
 
 const GroupNode = () => {
