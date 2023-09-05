@@ -34,6 +34,7 @@ function CircleNode({ id, onDragStart, data }) {
             isDisabled={!data?.editable}
             color={'white'}
             paddingTop={'1.8rem'}
+            overflow={"hidden"}
           />
         </Box>
     {/* {data?.label} */}

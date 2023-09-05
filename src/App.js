@@ -7,9 +7,7 @@ import ReactFlow, {
   Panel,
   Background,
   MiniMap,
-
   Position,
-  
 } from "reactflow";
 
 import "reactflow/dist/style.css";
@@ -20,14 +18,13 @@ import { initialNodes, initialEdges } from "./nodes-edges";
 import CircleNode from "./shapes/CircleNode.js";
 import PentagonNode from "./shapes/PentagonNode.js";
 import DiamondNode from "./shapes/DiamondNode";
-import {  Button, Flex,    Tooltip,  } from "@chakra-ui/react";
+import { Button, Flex, Tooltip } from "@chakra-ui/react";
 import GroupNode from "./shapes/GroupNode.js";
-import RectangleNode from './shapes/RectangleNode';
-import ParallelogramNode from './shapes/ParallelogramNode';
-const nodeTypes = {
-  
+import RectangleNode from "./shapes/RectangleNode";
+import ParallelogramNode from "./shapes/ParallelogramNode";
+import simplifiedAndArranged, {simplifyAndArrange} from "./newjson.js";
 
-  
+const nodeTypes = {
   circle: CircleNode,
   pentagon: PentagonNode,
   diamond: DiamondNode,
@@ -42,17 +39,14 @@ function Flow() {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const reactFlowWrapper = useRef(null);
   const [menu, setMenu] = useState(null);
-  
+
   const lastNodePosition = useRef({ x: 0, y: 0 });
   let id = 0;
-
- 
-  
   const onConnect = useCallback(
     (params) => {
       const edgeWithArrow = {
         ...params,
-        type:"step",
+        type: "step",
         markerEnd: { type: "arrowclosed", color: "black" },
         label: "Text",
         showLabel: false,
@@ -61,6 +55,22 @@ function Flow() {
           y: (params.sourceY + params.targetY) / 2,
         },
       };
+      // Check if source and target nodes are groups
+      const sourceNode = nodes.find((node) => node.id === params.source);
+      const targetNode = nodes.find((node) => node.id === params.target);
+      console.log("yes", sourceNode, targetNode);
+      if (
+        sourceNode &&
+        targetNode &&
+        sourceNode.type === "group" &&
+        targetNode.type === "group"
+      ) {
+        // When connecting two group nodes, set the parentGroup in the edge
+        edgeWithArrow.data = {
+          ...edgeWithArrow.data,
+          parentNode: sourceNode.id,
+        };
+      }
 
       setEdges((eds) => addEdge(edgeWithArrow, eds));
     },
@@ -73,7 +83,7 @@ function Flow() {
 
   const onDrop = useCallback(
     (event) => {
-      const getId = () => `${id++}`;
+      const getId = () => `randomnode_${+new Date()}`;
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
@@ -89,10 +99,18 @@ function Flow() {
         y: event.clientY - reactFlowBounds.top,
       });
       let newNode;
-      if (type === "circle") {
+      
+      if (
+        type === "circle" ||
+        type === "rectangle" ||
+        type === "pentagon" ||
+        type === "diamond" ||
+        type === "parallelogram"
+      ) {
+        // Create a regular node
         newNode = {
           id: getId(),
-          type: "circle", 
+          type,
           position,
           fontSize: 12,
           data: {
@@ -101,69 +119,15 @@ function Flow() {
             editable: true,
           },
           style: {
-            borderRadius: "50%",
-           
-          },
-        };
-      } else if (type === "rectangle") {
-        newNode = {
-          id: getId(),
-          type: "rectangle", // Use the correct type based on your nodeTypes
-          position,
-          fontSize: 12,
-          data: { label: "title", editable: true },
-          style: {
-            // ... (style properties for rectangle)
-          },
-        };
-      } else if (type === "pentagon") {
-        newNode = {
-          id: getId(),
-          type: "pentagon", // Use the correct type based on your nodeTypes
-          position,
-          fontSize: 12,
-          data: { label: "title", editable: true },
-          style: {
-            // ... (style properties for rectangle)
-          },
-        };
-      } else if (type === "diamond") {
-        newNode = {
-          id: getId(),
-          type: "diamond", // Use the correct type based on your nodeTypes
-          position,
-          fontSize: 12,
-          data: { label: "title", editable: true },
-          style: {
-            // ... (style properties for rectangle)
+            borderRadius: type === "circle" ? "50%" : "0",
+            
           },
         };
       }
-      else if (type === "parallelogram") {
-        newNode = {
-          id: getId(),
-          type: "parallelogram", // Use the correct type based on your nodeTypes
-          position,
-          fontSize: 12,
-          data: { label: "title", editable: true },
-          style: {
-            // ... (style properties for rectangle)
-          },
-        };} else if (type === "group") {
-        newNode = {
-          id: getId(),
-          type: "group", 
-          position,
-          fontSize: 12,
-          data: { label: "Group node", nodes: [], edges: [] },
-          style: {
-           
-          },
-        };
-      }
+
       setNodes((nds) => nds.concat(newNode));
     },
-    [reactFlowInstance,setNodes,id]
+    [reactFlowInstance, setNodes, id]
   );
 
   const onNodeContextMenu = useCallback(
@@ -186,7 +150,6 @@ function Flow() {
     [setMenu]
   );
 
- 
   const onEdgeClick = useCallback(
     (event, edge) => {
       const updatedEdges = edges.map((e) =>
@@ -210,7 +173,7 @@ function Flow() {
   const onPaneClick = useCallback(() => setMenu(null), [setMenu]);
 
   useEffect(() => {
-    console.log(nodes, edges);
+    console.log(nodes, edges, simplifiedAndArranged);
   }, [nodes, edges]);
 
   const handleDragEnd = useCallback(
@@ -221,6 +184,8 @@ function Flow() {
 
       nodes.forEach((nds) => {
         if (nds.type === "group") {
+          //checks if the position of the group node overlaps with the position of the current node. 
+          //If there is an overlap, it assigns the current group node to the groupNode variable.
           if (
             nds.position.x <= node.position.x &&
             nds.position.x + parseInt(nds.style?.width?.toString() || "0") >=
@@ -243,6 +208,7 @@ function Flow() {
                 x: node.positionAbsolute?.x - groupNode.position.x,
                 y: node.positionAbsolute?.y - groupNode.position.y,
               };
+            
             }
             return nds;
           });
@@ -253,6 +219,7 @@ function Flow() {
             if (nds.id === node.id) {
               nds.parentNode = undefined;
               nds.position = node.positionAbsolute;
+            
             }
             return nds;
           });
@@ -261,32 +228,44 @@ function Flow() {
     },
     [nodes, setNodes]
   );
-  const flowKey = 'example-flow';
+  const flowKey = "example-flow";
   const onSave = useCallback(() => {
-    console.log("save",reactFlowInstance)
-        if (reactFlowInstance) {
+    console.log("save", reactFlowInstance);
+    if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      console.log((flow),reactFlowInstance)
+      console.log(flow, reactFlowInstance);
       localStorage.setItem(flowKey, JSON.stringify(flow));
     }
   }, [reactFlowInstance]);
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
       const flow = JSON.parse(localStorage.getItem(flowKey));
-      console.log(flow)
+      console.log(flow);
 
       if (flow) {
-        
         setNodes(flow.nodes || []);
         setEdges(flow.edges || []);
-        
       }
     };
 
     restoreFlow();
-  }, [setNodes,setEdges]);
+  }, [setNodes, setEdges]);
+
+  const onDownloadJson = () => {
+    const flow = reactFlowInstance.toObject();
+    const simplifiedData = simplifyAndArrange(flow);
+    console.log(flow)
+    const data = JSON.stringify(simplifiedAndArranged);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = "newjson.json";
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
   const addNode = useCallback(
-    (type = "default") => {
+    (type = "default", parentGroup) => {
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
 
       const position = reactFlowInstance?.project({
@@ -299,24 +278,22 @@ function Flow() {
       setNodes((els) => {
         let newNode = {
           type,
-          id: Math.floor(Math.random() * 100).toString(),
+          id: `randomnode_${+new Date()}`,
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
+          editable: true,
           // position: position,
           position: {
             x: lastNodePosition.current.x,
             y: lastNodePosition.current.y,
           },
           data: {
-            label: "Node " + lastNodePosition.current.y / 50,
-            unit: "bla bla",
-            type: "flow chart",
-            description: "This node is auto generated.",
+            label: "Parent " + id,
           },
         };
         if (type === "group") {
           Object.assign(newNode, {
-             type,
+            type,
             // data: { ...newNode.data, onResize: (size) => {
             //   // Update the size of the GroupNode here
             //   setNodes((prevNodes) => {
@@ -330,12 +307,14 @@ function Flow() {
             //       }
             //       return nds;
             //     });
-            //   });}, 
+            //   });},
             // },
             style: {
               width: 500,
               height: 300,
+              zIndex: 10
             },
+            parentNode: parentGroup,
           });
           lastNodePosition.current.x += 120;
           lastNodePosition.current.y += 100;
@@ -345,116 +324,117 @@ function Flow() {
     },
     [setNodes, reactFlowInstance]
   );
-
+  const defaultEdgeOptions = {
+    zIndex: 10000,
+  };
   return (
     <>
-     
       <ReactFlowProvider>
-      <div style={{ width: "100%", height: "100vh" }} ref={reactFlowWrapper}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          nodeTypes={nodeTypes}
-          onInit={setReactFlowInstance}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          onNodeDoubleClick={onNodeContextMenu}
-          onPaneClick={onPaneClick}
-          onEdgeClick={onEdgeClick}
-          onNodeDragStop={handleDragEnd}
-          connectionMode='loose'
-        >
-          {edges.map((edge) => (
-            <React.Fragment key={`label-${edge.id}`}>
-              <div
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onEdgeClick(event, edge);
-                }}
-                style={{
-                  position: "absolute",
-                  top: edge.labelPosition.y,
-                  left: edge.labelPosition.x,
-                  backgroundColor: "white",
-                  padding: "4px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                {edge.isEditingLabel ? (
-                  <input
-                    type="text"
-                    value={edge.label}
-                    onChange={(event) => onLabelInputChange(event, edge)}
-                    onBlur={() => {
-                      const updatedEdges = edges.map((e) =>
-                        e.id === edge.id ? { ...e, isEditingLabel: false } : e
-                      );
-                      setEdges(updatedEdges);
-                    }}
-                    autoFocus
-                    style={{
-                      display: "block", // Show input field when editing
-                    }}
-                  />
-                ) : (
-                  // Conditional rendering of label text or input field
-                  <span
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onEdgeClick(event, edge);
-                    }}
-                    style={{
-                      display: edge.showLabel ? "inline-block" : "none", // Hide when not editing
-                    }}
-                  >
-                    {edge.label}
-                  </span>
-                )}
-              </div>
-            </React.Fragment>
-          ))}
-          <Background />
-          <MiniMap />
-          <Panel>
-          <Flex direction="column" gap={2} >
-              <Sidebar />
-              <Flex gap={2}>
-              <Tooltip label="Click me" aria-label="Click me tooltip">
-              <Button
-                
-                className="draggable-button"
-                onClick={() => addNode("group")}
-                
-                w={"100px"}
-               
-              >
-                Group Node
-              </Button>
-              </Tooltip>
-              
-              <Button onClick={onSave} w={"100px"} >save</Button>
-              <Button onClick={onRestore} w={"100px"}>restore</Button>
-              </Flex>
-              {/* <button className="btn-add" onClick={onClick}>
+        <div style={{ width: "100%", height: "100vh" }} ref={reactFlowWrapper}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            nodeTypes={nodeTypes}
+            onInit={setReactFlowInstance}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onNodeDoubleClick={onNodeContextMenu}
+            onPaneClick={onPaneClick}
+            onEdgeClick={onEdgeClick}
+            onNodeDragStop={handleDragEnd}
+            connectionMode="loose"
+            defaultEdgeOptions={defaultEdgeOptions}
+            elevateNodesOnSelect={true}
+          >
+            {edges.map((edge) => (
+              <React.Fragment key={`label-${edge.id}`}>
+                <div
+                  onClick={(event) => {
+                    onEdgeClick(event, edge);
+                  }}
+                  style={{
+                    position: "absolute",
+                    top: edge.labelPosition.y,
+                    left: edge.labelPosition.x,
+                    backgroundColor: "white",
+                    padding: "4px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {edge.isEditingLabel ? (
+                    <input
+                      type="text"
+                      value={edge.label}
+                      onChange={(event) => onLabelInputChange(event, edge)}
+                      onBlur={() => {
+                        const updatedEdges = edges.map((e) =>
+                          e.id === edge.id ? { ...e, isEditingLabel: false } : e
+                        );
+                        setEdges(updatedEdges);
+                      }}
+                      autoFocus
+                      style={{
+                        display: "block", // Show input field when editing
+                      }}
+                    />
+                  ) : (
+                    // Conditional rendering of label text or input field
+                    <span
+                      onClick={(event) => {
+                        onEdgeClick(event, edge);
+                      }}
+                      style={{
+                        display: edge.showLabel ? "inline-block" : "none", // Hide when not editing
+                      }}
+                    >
+                      {edge.label}
+                    </span>
+                  )}
+                </div>
+              </React.Fragment>
+            ))}
+            <Background />
+            <MiniMap />
+            <Panel>
+              <Flex direction="column" gap={2}>
+                <Sidebar />
+                <Flex gap={2}>
+                  <Tooltip label="Click me" aria-label="Click me tooltip">
+                    <Button
+                      className="draggable-button"
+                      onClick={() => addNode("group")}
+                      w={"100px"}
+                    >
+                      Group Node
+                    </Button>
+                  </Tooltip>
+
+                  <Button onClick={onSave} w={"100px"}>
+                    save
+                  </Button>
+                  <Button onClick={onRestore} w={"100px"}>
+                    restore
+                  </Button>
+                  <Button onClick={onDownloadJson} w={"150px"}>
+                    Download JSON
+                  </Button>
+                </Flex>
+                {/* <button className="btn-add" onClick={onClick}>
               Add Node
             </button> */}
-              {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
-            </Flex>
-          </Panel>
-        </ReactFlow>
+                {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
+              </Flex>
+            </Panel>
+          </ReactFlow>
         </div>
-          
-        </ReactFlowProvider>
-      
+      </ReactFlowProvider>
     </>
   );
 }
-
-
 
 export default Flow;

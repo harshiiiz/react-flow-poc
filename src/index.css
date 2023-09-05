@@ -32,8 +32,8 @@ input{
   border: 1px solid #ccc;
   background-color: #fff;
   margin-bottom: 5px;
-  user-select: none;
-  position: relative;
+  
+  
 }
 
 /* Specific styles for pentagon node */
@@ -84,7 +84,7 @@ input{
   display: flex;
   justify-content: center;
   align-items: center;
-  
+  z-index: 10000;
   background: rgb(89, 60, 163);
 }
 .react-flow__edge-path, .react-flow__connection-path {
@@ -93,9 +93,6 @@ input{
   fill: none;
 }
 
-.dndnode {
-  position: relative;
-}
 
 .dndnode input {
   font-size: 12px;

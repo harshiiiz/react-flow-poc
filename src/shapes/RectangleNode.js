@@ -29,6 +29,7 @@ function RectangleNode({ id, onDragStart,data }) {
             isDisabled={!data?.editable}
             color={'white'}
             paddingTop={'6rem'}
+            overflow={"hidden"}
           />
         </Box>
       
