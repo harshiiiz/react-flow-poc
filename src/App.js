@@ -74,7 +74,7 @@ function Flow() {
 
       setEdges((eds) => addEdge(edgeWithArrow, eds));
     },
-    [setEdges]
+    [setEdges,nodes]
   );
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -127,7 +127,7 @@ function Flow() {
 
       setNodes((nds) => nds.concat(newNode));
     },
-    [reactFlowInstance, setNodes, id]
+    [reactFlowInstance, setNodes]
   );
 
   const onNodeContextMenu = useCallback(
@@ -254,7 +254,7 @@ function Flow() {
   const onDownloadJson = () => {
     const flow = reactFlowInstance.toObject();
     const simplifiedData = simplifyAndArrange(flow);
-    console.log(flow)
+    console.log(flow,simplifiedData)
     const data = JSON.stringify(simplifiedAndArranged);
     const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -322,7 +322,7 @@ function Flow() {
         return [...els, newNode];
       });
     },
-    [setNodes, reactFlowInstance]
+    [setNodes, reactFlowInstance,id]
   );
   const defaultEdgeOptions = {
     zIndex: 10000,
