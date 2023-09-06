@@ -1,5 +1,5 @@
 
- export function simplifyAndArrange(json) {
+ function simplifyAndArrange(json) {
     const nodeDict = {};
     const flows = {};
     const ungroupedNodes = [];
@@ -58,12 +58,17 @@
         const countB = flowB.nodes.reduce((total, node) => total + node.outgoingEdges.length, 0);
         return countA - countB;
     });
+    // const sortedFlows = Object.values(flows).sort((flowA, flowB) => {
+    //     const countA = flowA.nodes.reduce((total, node) => total + node.outgoingEdges.length, 0);
+    //     const countB = flowB.nodes.reduce((total, node) => total + node.outgoingEdges.length, 0);
+    //     return countA - countB;
+    // });
 
     // Sort nodes within each flow based on outgoing edges length
     for (const flow of sortedFlows) {
         flow.nodes.sort((a, b) => a.outgoingEdges.length - b.outgoingEdges.length);
     }
-
+console.log(json,sortedFlows)
     return {
        
         flows: sortedFlows,
@@ -80,15 +85,5 @@ function findLabel(nodes, nodeId) {
     return "";
 }
 
-const originalJson = {
-    "nodes":[], 
-    "edges": []
-};
 
-
-const simplifiedAndArranged = simplifyAndArrange(originalJson);
-
-
-console.log(simplifiedAndArranged);
-
-export default simplifiedAndArranged
+export default simplifyAndArrange

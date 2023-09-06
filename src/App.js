@@ -22,7 +22,7 @@ import { Button, Flex, Tooltip } from "@chakra-ui/react";
 import GroupNode from "./shapes/GroupNode.js";
 import RectangleNode from "./shapes/RectangleNode";
 import ParallelogramNode from "./shapes/ParallelogramNode";
-import simplifiedAndArranged, {simplifyAndArrange} from "./newjson.js";
+import  simplifyAndArrange from "./newjson.js";
 
 const nodeTypes = {
   circle: CircleNode,
@@ -173,7 +173,7 @@ function Flow() {
   const onPaneClick = useCallback(() => setMenu(null), [setMenu]);
 
   useEffect(() => {
-    console.log(nodes, edges, simplifiedAndArranged);
+    console.log(nodes, edges);
   }, [nodes, edges]);
 
   const handleDragEnd = useCallback(
@@ -255,7 +255,7 @@ function Flow() {
     const flow = reactFlowInstance.toObject();
     const simplifiedData = simplifyAndArrange(flow);
     console.log(flow,simplifiedData)
-    const data = JSON.stringify(simplifiedAndArranged);
+    const data = JSON.stringify(simplifiedData);
     const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
