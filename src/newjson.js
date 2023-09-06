@@ -58,11 +58,12 @@
         const countB = flowB.nodes.reduce((total, node) => total + node.outgoingEdges.length, 0);
         return countA - countB;
     });
-    // const sortedFlows = Object.values(flows).sort((flowA, flowB) => {
-    //     const countA = flowA.nodes.reduce((total, node) => total + node.outgoingEdges.length, 0);
-    //     const countB = flowB.nodes.reduce((total, node) => total + node.outgoingEdges.length, 0);
-    //     return countA - countB;
-    // });
+    
+    ungroupedNodes.sort((nodeA, nodeB) => {
+        const countA = nodeA.outgoingEdges.length;
+        const countB = nodeB.outgoingEdges.length;
+        return countA - countB;
+    });
 
     // Sort nodes within each flow based on outgoing edges length
     for (const flow of sortedFlows) {
