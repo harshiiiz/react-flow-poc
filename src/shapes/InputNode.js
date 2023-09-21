@@ -3,17 +3,15 @@ import React, { useState } from "react";
 import { Handle, Position } from "reactflow";
 import { Box, Textarea } from "@chakra-ui/react";
 
-function CircleNode({ id, onDragStart, data }) {
+function InputNode({ id, onDragStart, data }) {
   const [nodeName, setNodeName] = useState(data?.label || "");
   return (
     <>
-     
       <div
-        className={`dndnode circle ${data?.editable ? "hoverable" : ""}`}
-        onDragStart={(event) => onDragStart(event, "circle")}
+        className="dndnode inputnode"
+        onDragStart={(event) => onDragStart(event, "input")}
         draggable
       >
-       
         <Box position="relative">
           <Textarea
             value={nodeName}
@@ -25,29 +23,26 @@ function CircleNode({ id, onDragStart, data }) {
             size="xs"
             variant="unstyled"
             textAlign="center"
-            display={"flex"}
-            justifyContent={"center"}
-            w={"auto"}
+            position="absolute"
+            left="40%"
+            top="70%"
+            transform="translate(-50%, -50%)"
+            w={"80px"}
             wordwrap="break-word"
             zIndex="1000"
             wordBreak={"break-all"}
             isDisabled={!data?.editable}
-            color={"white"}
-           
+            color={"black"}
+            paddingTop={"2.8rem"}
             overflow={"hidden"}
           />
         </Box>
-        <div className="handle-wrapper">
-          <Handle type="source" position={Position.Top} id="a" />
-          <Handle type="source" position={Position.Left} id="b" />
-          <Handle type="source" position={Position.Right} id="c" />
-          <Handle type="source" position={Position.Bottom} id="d" />
-        </div>
         {/* {data?.label} */}
       </div>
-      
+      <Handle type="source" position={Position.Left} id="2" />
+      <Handle type="source" position={Position.Right} id="3" />
     </>
   );
 }
 
-export default CircleNode;
+export default InputNode;

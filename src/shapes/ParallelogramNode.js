@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
-import { Handle, Position } from 'reactflow';
+import React, { useState } from "react";
+import { Handle, Position, NodeResizer } from "reactflow";
 
-import { Box,  Textarea } from '@chakra-ui/react';
-function ParallelogramNode({ id, onDragStart,data }) {
-  const [nodeName, setNodeName] = useState(data?.label||"");
+import { Box, Textarea } from "@chakra-ui/react";
+function ParallelogramNode({ id, onDragStart, data }) {
+  const [nodeName, setNodeName] = useState(data?.label || "");
   return (
     <>
-    <div className="dndnode parallelogram" onDragStart={(event) => onDragStart(event, 'parallelogram')} draggable>
-    <Box position="relative">
+      <div
+        className={`dndnode parallelogram ${data?.editable ? "hoverable" : ""}`}
+        onDragStart={(event) => onDragStart(event, "parallelogram")}
+        draggable
+      >
+        <NodeResizer minWidth={100} minHeight={30} />
+        <Box position="relative">
           <Textarea
             value={nodeName}
             onChange={(e) => setNodeName(e.target.value)}
@@ -18,26 +23,27 @@ function ParallelogramNode({ id, onDragStart,data }) {
             size="xs"
             variant="unstyled"
             textAlign="center"
-            position="absolute"
-            left="50%"
-            top="120%"
-            transform="translate(-50%, -50%)"
-           w={'80px'}
-           wordwrap="break-word"
+            display={"flex"}
+            justifyContent={"center"}
+            
+            w={"auto"}
+            wordwrap="break-word"
             zIndex="1000"
             wordBreak={"break-all"}
             isDisabled={!data?.editable}
-            color={'white'}
-            paddingTop={'6rem'}
+            color={"white"}
+            
             overflow={"hidden"}
           />
         </Box>
       
-    </div>
-    <Handle type="source" position={Position.Top} id='1'/>
-    <Handle type="source" position={Position.Left} id='2'/>
-    <Handle type="source" position={Position.Right} id='3'/>
-    <Handle type="source" position={Position.Bottom} id='4'/>
+      <div className="handle-wrapper">
+      <Handle type="source" position={Position.Top} id="1" />
+      <Handle type="source" position={Position.Left} id="2" />
+      <Handle type="source" position={Position.Right} id="3" />
+      <Handle type="source" position={Position.Bottom} id="4" />
+      </div>
+      </div>
     </>
   );
 }

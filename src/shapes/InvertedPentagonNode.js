@@ -1,13 +1,12 @@
-// PentagonNode.js
 import React, { useState } from 'react';
 import { Handle, Position } from 'reactflow';
 
 import { Box,  Textarea } from '@chakra-ui/react';
-function PentagonNode({ id, onDragStart,data }) {
+function InvertedPentagonNode({ id, onDragStart,data }) {
   const [nodeName, setNodeName] = useState(data?.label||"");
   return (
     <>
-    <div className="dndnode pentagon" onDragStart={(event) => onDragStart(event, 'pentagon')} draggable>
+    <div className="dndnode inverted_pentagon" onDragStart={(event) => onDragStart(event, 'pentagon')} draggable>
     <Box position="relative">
           <Textarea
             value={nodeName}
@@ -28,6 +27,7 @@ function PentagonNode({ id, onDragStart,data }) {
             isDisabled={!data?.editable}
             color={'white'}
            overflow={"hidden"}
+           transform= {"rotate(180deg)"}
           />
         </Box>
       
@@ -40,4 +40,4 @@ function PentagonNode({ id, onDragStart,data }) {
   );
 }
 
-export default PentagonNode;
+export default InvertedPentagonNode;

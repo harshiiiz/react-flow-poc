@@ -1,111 +1,130 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
-input{
+input {
   height: 30px;
- 
+
   padding-inline: 15px;
   border-radius: 5px;
   background: white;
-
 }
 
 .dndnode.pentagon,
 .dndnode.square,
 .dndnode.circle,
-.dndnode.diamond ,
+.dndnode.diamond,
 .dndnode.rectangle,
-.dndnode.parallelogram {
+.dndnode.parallelogram .dndnode.inputnode {
   cursor: grab;
-  padding: 10px;
-  border: 1px solid #ccc;
+
   background-color: #fff;
-  margin-bottom: 5px;
-  
-  
 }
 
 /* Specific styles for pentagon node */
 .dndnode.pentagon {
-  width: 100px;
-  height: 100px;
+  width: auto;
+  height: 100%;
+  min-width: 100px;
+  min-height: 100px;
   clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-  background: rgb(89, 60, 163);
+  background: #9747FF;
+  
+}
+.dndnode.inverted_pentagon{
+  width: auto;
+  height: 100%;
+  min-width: 100px;
+  min-height: 100px;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  background: #9747FF;
+  transform: rotate(180deg);
 }
 .dndnode.rectangle {
-  width: 100px;
-  height: 100px;
+  width: auto;
+  height: 100%;
+  min-width: 100px;
+  min-height: 100px;
+  background: #9747FF;
   
-  background: rgb(89, 60, 163);
 }
-.dndnode.parallelogram{
-  width: 100px;
-	height: 100px;
-	transform: skew(-20deg);
-  background: rgb(89, 60, 163);
-
+.dndnode.straight_pentagon{
+  width: auto;
+  height: 100%;
+  min-width: 100px;
+  min-height: 100px;
+  background: #9747FF;
+  clip-path: polygon(50% 0%, 100% 38%, 100% 100%, 0% 100%, 0% 38%);
+}
+.dndnode.parallelogram {
+  width: auto;
+  height: 100%;
+  min-width: 100px;
+  min-height: 100px;
+  transform: skew(-20deg);
+  background: #9747FF;
 }
 
 /* Specific styles for square node */
-.dndnode.square {
-  width: 80px;
-  height: 80px;
-}
 
 
- 
-/* Specific styles for diamond node */
+
 .dndnode.diamond {
-  width: 100px;
-  height: 100px;
-  
+  width: auto;
+  height: 100%;
+  min-width: 100px;
+  min-height: 100px;
   clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  background: rgb(89, 60, 163);
+  background: #9747FF
 }
-
-
 
 /* Add specific styles for circle node */
 .dndnode.circle {
   border-radius: 50%;
-  width: 100px;
-  height: 100px;
+  width: auto;
+  height: 100%;
+  min-width: 100px;
+  min-height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 10000;
-  background: rgb(89, 60, 163);
+  background: #9747FF
 }
-.react-flow__edge-path, .react-flow__connection-path {
+.react-flow__edge-path,
+.react-flow__connection-path {
   stroke: black !important;
   stroke-width: 2 !important;
   fill: none;
 }
-
-
+.dndnode.inputnode {
+  background-color: rgb(89, 60, 163) !important;
+  width: 100px;
+}
+.dndnode.outputnode {
+  background-color: rgb(89, 60, 163) !important;
+  width: 100px;
+}
 .dndnode input {
   font-size: 12px;
   padding: 0;
 }
-
 
 /* Adjust the position of the editable name placeholder */
 .dndnode input {
   transform: translate(-50%, -50%);
 }
 .draggable-button {
-
   background-color: lightblue;
   padding: 6px 12px;
   border: none;
@@ -113,15 +132,105 @@ input{
   cursor: pointer;
 }
 
-/* GroupNode.css */
-.group-node {
-  
 
+.group-node {
   padding: 80px;
   border-radius: 5px;
   cursor: pointer;
-
+border: none;
   overflow: hidden;
 }
 
+.context-menu {
+  background: white;
+  border-style: solid;
+  box-shadow: 10px 19px 20px rgba(0, 0, 0, 10%);
+  position: absolute;
+  z-index: 10;
+}
 
+.context-menu button {
+  border: none;
+  display: block;
+  padding: 0.5em;
+  text-align: left;
+  width: 100%;
+}
+
+.context-menu button:hover {
+  background: white;
+}
+
+.edge-context-menu {
+  background: white;
+  border-style: solid;
+  box-shadow: 10px 19px 20px rgba(0, 0, 0, 10%);
+  position: absolute;
+  z-index: 10;
+}
+
+.edge-context-menu button {
+  border: none;
+  display: block;
+
+  text-align: center;
+  width: 100%;
+}
+
+.download-btn {
+  text-align: center;
+}
+
+.dndnode.circle .handle-wrapper,
+.dndnode.parallelogram .handle-wrapper,
+.dndnode.rectangle .handle-wrapper,
+.dndnode.diamond .handle-wrapper,
+.dndnode.pentagon .handle-wrapper {
+  z-index: 1001;
+  visibility: hidden;
+}
+
+.dndnode.circle.hoverable:hover .handle-wrapper,
+.dndnode.parallelogram.hoverable:hover .handle-wrapper,
+.dndnode.rectangle.hoverable:hover .handle-wrapper,
+.dndnode.diamond.hoverable:hover .handle-wrapper,
+.dndnode.pentagon.hoverable:hover .handle-wrapper {
+  visibility: visible;
+}
+iframe#webpack-dev-server-client-overlay {
+  display: none !important;
+}
+
+.react-flow__background{
+  background-color: #F9F8FC;
+}
+
+.react-flow__panel {
+  background-color: #fff;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.07);
+
+}
+.react-flow__panel.top.left {
+  margin: 0;
+  width: 100%;
+  
+ 
+}
+.react-flow__node.annotation {
+  border-radius: 0;
+  text-align: left;
+  background: white;
+  border: none;
+  line-height: 1.4;
+  width: 225px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%), 0 2px 4px -1px rgb(0 0 0 / 8%);
+}
+
+.group-title {
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  
+}

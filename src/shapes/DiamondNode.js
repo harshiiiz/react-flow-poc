@@ -1,15 +1,19 @@
 // DiamondNode.js
-import React, { useState } from 'react';
-import { Handle, Position } from 'reactflow';
-import { Box,  Textarea } from '@chakra-ui/react';
+import React, { useState } from "react";
+import { Handle, Position, NodeResizer } from "reactflow";
+import { Box, Textarea } from "@chakra-ui/react";
 
-
-function DiamondNode({ id, onDragStart,data }) {
-  const [nodeName, setNodeName] = useState(data?.label||"");
+function DiamondNode({ id, onDragStart, data }) {
+  const [nodeName, setNodeName] = useState(data?.label || "");
   return (
     <>
-    <div className="dndnode diamond" onDragStart={(event) => onDragStart(event, 'diamond')} draggable>
-    <Box position="relative">
+      <div
+        className="dndnode diamond"
+        onDragStart={(event) => onDragStart(event, "diamond")}
+        draggable
+      >
+        <NodeResizer minWidth={100} minHeight={30} />
+        <Box position="relative">
           <Textarea
             value={nodeName}
             onChange={(e) => setNodeName(e.target.value)}
@@ -20,26 +24,22 @@ function DiamondNode({ id, onDragStart,data }) {
             size="xs"
             variant="unstyled"
             textAlign="center"
-            position="absolute"
-            left="50%"
-            top="120%"
-            transform="translate(-50%, -50%)"
-           w={'80px'}
-           wordwrap="break-word"
+            justifyContent={"center"}
+            display={"flex"}
+            w={"auto"}
+            wordwrap="break-word"
             zIndex="1000"
             wordBreak={"break-all"}
             isDisabled={!data?.editable}
-            color={'white'}
-            paddingTop={'6rem'}
+            color={"white"}
+            overflow={"hidden"}
           />
         </Box>
-      
-    </div>
-    <Handle type="source" position={Position.Top} id='1'/>
-    <Handle type="source" position={Position.Left} id='2'/>
-    <Handle type="source" position={Position.Right} id='3'/>
-    <Handle type="source" position={Position.Bottom} id='4'/>
-
+      </div>
+      <Handle type="source" position={Position.Top} id="1" />
+      <Handle type="source" position={Position.Left} id="2" />
+      <Handle type="source" position={Position.Right} id="3" />
+      <Handle type="source" position={Position.Bottom} id="4" />
     </>
   );
 }
