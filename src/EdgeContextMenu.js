@@ -1,7 +1,7 @@
 // EdgeContextMenu.js
 
 import React from "react";
-import { Button, Flex } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 export default function EdgeContextMenu({ id,top, left, right, bottom, onDelete, ...props }) {
     console.log(id,top,left,right)
   return (
