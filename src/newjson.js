@@ -38,11 +38,13 @@
     for (const nodeId in nodeDict) {
         const node = nodeDict[nodeId];
         const parentNodeId = json.nodes.find(n => n.id === nodeId)?.parentNode;
+        const flowName=json.nodes.find(n => n.id === nodeId)?.data.flowName
 
         if (parentNodeId) {
             if (!flows[parentNodeId]) {
                 flows[parentNodeId] = {
                     flowId: parentNodeId,
+                    flowName:flowName,
                     nodes: []
                 };
             }

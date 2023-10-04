@@ -31,7 +31,7 @@ function RectangleNode({ id, onDragStart, data }) {
             wordBreak={"break-all"}
             isDisabled={!data?.editable}
             color={"white"}
-            // paddingTop={'6rem'}
+             paddingTop={'2.5rem'}
             overflow={"hidden"}
           />
         </Box>

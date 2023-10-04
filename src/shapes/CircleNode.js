@@ -33,7 +33,7 @@ function CircleNode({ id, onDragStart, data }) {
             wordBreak={"break-all"}
             isDisabled={!data?.editable}
             color={"white"}
-           
+           pt={"1.8rem"}
             overflow={"hidden"}
           />
         </Box>

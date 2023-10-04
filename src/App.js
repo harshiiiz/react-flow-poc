@@ -14,7 +14,7 @@ import "reactflow/dist/style.css";
 import Sidebar from "./Sidebar.js";
 
 import ContextMenu from "./ContextMenu";
-import { initialNodes, initialEdges } from "./nodes-edges";
+
 import CircleNode from "./shapes/CircleNode.js";
 import PentagonNode from "./shapes/PentagonNode.js";
 import DiamondNode from "./shapes/DiamondNode";
@@ -45,7 +45,35 @@ const nodeTypes = {
   straight_pentagon: StraightPentagonNode,
 };
 
+const initialEdges = [
+  // {
+  //   id: 'e1-2',
+  //   source: '1',
+  //   target: '2',
+  // },
+];
+
 function Flow() {
+  const initialNodes = [
+    {
+      id: "1",
+      position: { x: 10, y: 70 },
+  
+      data: {
+        onResize: (height, heightChange) =>
+          handleFirstGroupNodeResize(height, heightChange),
+      },
+      editable: true,
+      type: "group",
+      style: {
+        width: 1001,
+        height: 326,
+        backgroundColor: "#F0EAFD",
+        border: "none",
+      },
+      draggable: false,
+    },
+  ];
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -53,7 +81,36 @@ function Flow() {
   const [menu, setMenu] = useState(null);
   const [edgemenu, setEdgeMenu] = useState(null);
   const lastNodePosition = useRef({ x: 0, y: 0 });
+  const flowName = "Flow";
+  const [flowname, setFlowname] = useState(flowName);
+  console.log(flowname)
   let id = 0;
+  const handleFirstGroupNodeResize = (height, heightChange) => {
+    setNodes((prevElements) => {
+      const id = prevElements.find(
+        (el) => el.type === "group" && el.position.y === height.y
+      ).id;
+      // console.log(prevElements, id);
+
+      const groupNodesBelow = prevElements
+        .filter(
+          (el) =>
+            el.type === "group" &&
+            el.id !== id &&
+            el.position.y > height.y
+        )
+        .sort((a, b) => a.position.y - b.position.y); 
+     // console.log(groupNodesBelow);
+      
+      let offsetY = heightChange + height.y + 326 + 10;
+      //console.log(offsetY);
+      groupNodesBelow.forEach((groupNode) => {
+        groupNode.position.y = offsetY;
+        offsetY += groupNode.style.height + 10; 
+      });
+      return prevElements;
+    });
+  }
   const onConnect = useCallback(
     (params) => {
       const edgeWithArrow = {
@@ -69,21 +126,24 @@ function Flow() {
       };
       // Check if source and target nodes are groups
       const sourceNode = nodes.find((node) => node.id === params.source);
+
       const targetNode = nodes.find((node) => node.id === params.target);
+
       if (
         sourceNode &&
         targetNode &&
-        sourceNode.type === "group" &&
-        targetNode.type === "group"
+        sourceNode.parentNode === targetNode.parentNode
       ) {
         // When connecting two group nodes, set the parentGroup in the edge
         edgeWithArrow.data = {
           ...edgeWithArrow.data,
           parentNode: sourceNode.id,
         };
-      }
 
-      setEdges((eds) => addEdge(edgeWithArrow, eds));
+        setEdges((eds) => addEdge(edgeWithArrow, eds));
+      } else if (sourceNode.parentNode && targetNode.parentNode === undefined) {
+        setEdges((eds) => addEdge(edgeWithArrow, eds));
+      }
     },
     [setEdges, nodes]
   );
@@ -299,7 +359,7 @@ function Flow() {
 
   //   restoreFlow();
   // }, [setNodes, setEdges]);
-
+  
   const onDownloadJson = () => {
     const flow = reactFlowInstance.toObject();
     const simplifiedData = simplifyAndArrange(flow);
@@ -313,7 +373,7 @@ function Flow() {
     link.click();
     URL.revokeObjectURL(url);
   };
-
+  
   const addNode = useCallback(
     (type = "default", parentGroup) => {
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
@@ -322,7 +382,7 @@ function Flow() {
         x: reactFlowBounds.left + reactFlowBounds.width / 2,
         y: reactFlowBounds.top + reactFlowBounds.height / 2,
       });
-      console.log(lastNodePosition, reactFlowBounds);
+      //console.log(lastNodePosition, reactFlowBounds);
       lastNodePosition.current = position;
       setNodes((els) => {
         let newNode = {
@@ -339,6 +399,8 @@ function Flow() {
           },
           data: {
             label: "Parent " + id,
+            value: flowName,
+            id,
           },
         };
 
@@ -348,28 +410,62 @@ function Flow() {
             .reduce((prev, curr) =>
               curr.position.y > prev.position.y ? curr : prev
             );
-
-          // Calculate the new position for the group node with a gap of 10px
           newNode.position.y =
-            lastGroupNode.position.y + lastGroupNode.style.height + 40;
+            lastGroupNode.position.y + lastGroupNode.style.height + 10;
+            const onChange = (event) => {
+              setNodes((nds) =>
+                nds.map((node) => {
+                  const color = event.target.value;
+          
+                  setFlowname(color);
+          
+                  return {
+                    ...node,
+                    data: {
+                      ...node.data,
+                      flowName: color,
+                    },
+                  };
+                })
+              );
+            };
+            const handleGroupNodeResize = (height, heightChange) => {
+              setNodes((prevElements) => {
+                const id = prevElements.find(
+                  (el) => el.type === "group" && el.position.y === height.y
+                ).id;
+                // console.log(prevElements, id);
+          
+                const groupNodesBelow = prevElements
+                  .filter(
+                    (el) =>
+                      el.type === "group" &&
+                      el.id !== id &&
+                      el.position.y > height.y
+                  )
+                  .sort((a, b) => a.position.y - b.position.y); 
+               // console.log(groupNodesBelow);
+                
+                let offsetY = heightChange + height.y + 326 + 10;
+                //console.log(offsetY);
+                groupNodesBelow.forEach((groupNode) => {
+                  groupNode.position.y = offsetY;
+                  offsetY += groupNode.style.height + 10; 
+                });
+                return prevElements;
+              });
+            };
 
           Object.assign(newNode, {
             type,
-            // data: { ...newNode.data, onResize: (size) => {
-            //   // Update the size of the GroupNode here
-            //   setNodes((prevNodes) => {
-            //     return prevNodes.map((nds) => {
-            //       if (nds.id === newNode.id) {
-            //         nds.style = {
-            //           ...nds.style,
-            //           width: size.width,
-            //           height: size.height,
-            //         };
-            //       }
-            //       return nds;
-            //     });
-            //   });},
-            // },
+            data: {
+              ...newNode.data,
+              onChange: onChange,
+              flowName,
+              onResize: (height, heightChange) =>
+                handleGroupNodeResize(height, heightChange),
+            },
+
             style: {
               width: 1001,
               height: 326,
@@ -382,13 +478,14 @@ function Flow() {
           lastNodePosition.current.x += 120;
           lastNodePosition.current.y += 100;
         }
-        console.log(els);
+
         return [...els, newNode];
       });
     },
 
     [setNodes, reactFlowInstance, id]
   );
+
   const onDeleteEdge = (edgeId) => {
     setEdges((prevEdges) => prevEdges.filter((edge) => edge.id !== edgeId));
     setEdgeMenu(null); // Close the context menu
@@ -493,10 +590,12 @@ function Flow() {
                   <Image
                     w={"36px"}
                     h={"36px"}
+                    borderRadius={2.5}
                     src="https://bit.ly/dan-abramov"
                     alt="logo"
+
                   />
-                  <Heading fontSize={"16px"} ml={"12px"} fontWeight={500}>
+                  <Heading fontSize={"16px"} ml={"12px"} color={"#232323"} fontStyle={"normal"} fontFamily={"Gotham HTF Book"} fontWeight={550}>
                     BLE Speaker
                   </Heading>
                   <Button
@@ -504,6 +603,7 @@ function Flow() {
                     bg={"#fff"}
                     border={"1px solid #D9D9D9"}
                     borderRadius={"4px"}
+                    fontFamily={"Gotham HTF Book"}
                   >
                     STM 4324324
                   </Button>
@@ -536,6 +636,7 @@ function Flow() {
                     p={"6px 12px 6px 8px"}
                     backgroundColor={"#DDD5ED"}
                     color={"#5906AF"}
+                    fontFamily={"Gotham HTF Book"}
                   >
                     DOWNLOAD JSON
                   </Button>
@@ -545,6 +646,7 @@ function Flow() {
                     p={"6px 12px 6px 8px"}
                     backgroundColor={"#5906AF"}
                     fontSize={"14px"}
+                    fontFamily={"Gotham HTF Book"}
                   >
                     GENERATE FIRMWARE
                   </Button>
@@ -575,6 +677,7 @@ function Flow() {
                     color={"#5906AF"}
                     backgroundColor={"#DDD5ED"}
                     leftIcon={<PlusIcon />}
+                    fontFamily={"Gotham HTF Book"}
                   >
                     ADD FLOW
                   </Button>

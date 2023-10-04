@@ -28,6 +28,7 @@ function PentagonNode({ id, onDragStart,data }) {
             isDisabled={!data?.editable}
             color={'white'}
            overflow={"hidden"}
+           pt={"2.2rem"}
           />
         </Box>
       

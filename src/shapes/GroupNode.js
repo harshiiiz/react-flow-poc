@@ -1,23 +1,43 @@
 import { Input } from "@chakra-ui/react";
-import React from "react";
-import {  NodeResizeControl } from "reactflow";
+import React, { useCallback } from "react";
+import { NodeResizeControl, Handle, Position } from "reactflow";
 const controlStyle = {
-  background: 'transparent',
-  border: 'none',
+  background: "transparent",
+  border: "none",
 };
-const GroupNode = () => {
+
+const GroupNode = ({ data }) => {
+  const handleResize = useCallback((width, height) => {
+   
+    const prevHeight = 326;
+    const heightChange = height.height - prevHeight;
+    data.onResize( height,heightChange);
+   // console.log(height, prevHeight, heightChange,height.y);
+    return heightChange;
+  }, [data]);
+
   return (
     <>
-     <div className="group-title">
-      <Input placeholder="Group Name" size={"xs"}/>
-      
-    </div>
-    <NodeResizeControl style={controlStyle} minWidth={100} minHeight={50}>
+      <div className="group-title">
+        <Input
+          placeholder="Flow Name"
+          value={data.FlowName}
+          onChange={data.onChange}
+          size={"xs"}
+          fontFamily={"Gotham HTF Book"}
+        />
+      </div>
+      <NodeResizeControl
+        style={controlStyle}
+        minWidth={100}
+        minHeight={50}
+        onResizeEnd={handleResize}
+      >
         <ResizeIcon />
       </NodeResizeControl>
-      {/* <Handle type="source" position={Position.Top} id="1" />
-      
-      <Handle type="source" position={Position.Bottom} id="4" /> */}
+      <Handle type="source" position={Position.Right} id="1" />
+
+      <Handle type="source" position={Position.Left} id="4" />
     </>
   );
 };
@@ -33,7 +53,7 @@ function ResizeIcon() {
       fill="none"
       strokeLinecap="round"
       strokeLinejoin="round"
-      style={{ position: 'absolute', right: 5, bottom: 5 }}
+      style={{ position: "absolute", right: 5, bottom: 5 }}
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <polyline points="16 20 20 20 20 16" />

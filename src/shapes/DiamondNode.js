@@ -13,14 +13,15 @@ function DiamondNode({ id, onDragStart, data }) {
         draggable
       >
         <NodeResizer minWidth={100} minHeight={30} />
-        <Box position="relative">
-          <Textarea
+        <Box position="relative" display={"flex"} justifyContent={"center"}>
+          <Textarea 
             value={nodeName}
             onChange={(e) => setNodeName(e.target.value)}
             onBlur={() => {
               // Update the label in the data object when input loses focus
               data.label = nodeName;
             }}
+          
             size="xs"
             variant="unstyled"
             textAlign="center"
@@ -33,6 +34,7 @@ function DiamondNode({ id, onDragStart, data }) {
             isDisabled={!data?.editable}
             color={"white"}
             overflow={"hidden"}
+            pt={"2.2rem"}
           />
         </Box>
       </div>

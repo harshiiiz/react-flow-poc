@@ -16,8 +16,9 @@ function Sidebar() {
           fontSize={"10px"}
           fontWeight={600}
           textAlign={"center"}
-          fontFamily={"Inter"}
+          
           textTransform={"uppercase"}
+          fontFamily={"Gotham HTF Book"}
         >
           Trigger
         </Heading>
@@ -28,7 +29,7 @@ function Sidebar() {
           fontSize={"10px"}
           fontWeight={600}
           textAlign={"center"}
-          fontFamily={"Inter"}
+          fontFamily={"Gotham HTF Book"}
           textTransform={"uppercase"}
         >
           Delay
@@ -40,7 +41,8 @@ function Sidebar() {
           fontSize={"10px"}
           fontWeight={600}
           textAlign={"center"}
-          fontFamily={"Inter"}
+          fontFamily={"Gotham HTF Book"}
+          
           textTransform={"uppercase"}
         >
           Action
@@ -52,7 +54,8 @@ function Sidebar() {
           fontSize={"10px"}
           fontWeight={600}
           textAlign={"center"}
-          fontFamily={"Inter"}
+          fontFamily={"Gotham HTF Book"}
+          
           textTransform={"uppercase"}
         >
           Decision
@@ -64,7 +67,8 @@ function Sidebar() {
           fontSize={"10px"}
           fontWeight={600}
           textAlign={"center"}
-          fontFamily={"Inter"}
+          fontFamily={"Gotham HTF Book"}
+          
           textTransform={"uppercase"}
         >
           Write
@@ -76,7 +80,8 @@ function Sidebar() {
           fontSize={"10px"}
           fontWeight={600}
           textAlign={"center"}
-          fontFamily={"Inter"}
+          fontFamily={"Gotham HTF Book"}
+          
           textTransform={"uppercase"}
         >
           Read
@@ -88,7 +93,8 @@ function Sidebar() {
           fontSize={"10px"}
           fontWeight={600}
           textAlign={"center"}
-          fontFamily={"Inter"}
+          fontFamily={"Gotham HTF Book"}
+          
           textTransform={"uppercase"}
         >
           End
