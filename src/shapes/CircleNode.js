@@ -22,6 +22,7 @@ function CircleNode({ id, onDragStart, data }) {
               // Update the label in the data object when input loses focus
               data.label = nodeName;
             }}
+            placeholder="Label"
             size="xs"
             variant="unstyled"
             textAlign="center"

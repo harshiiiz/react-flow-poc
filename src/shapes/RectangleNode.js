@@ -23,6 +23,7 @@ function RectangleNode({ id, onDragStart, data }) {
             size="xs"
             variant="unstyled"
             textAlign="center"
+            placeholder="Label"
             justifyContent={"center"}
             display={"flex"}
             w={"auto"}

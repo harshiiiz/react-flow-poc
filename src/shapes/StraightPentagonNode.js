@@ -23,6 +23,7 @@ function StraightPentagonNode({ id, onDragStart,data }) {
            w={'auto'}
            wordwrap="break-word"
             zIndex="1000"
+            placeholder="Label"
             wordBreak={"break-all"}
             isDisabled={!data?.editable}
             color={'white'}

@@ -23,6 +23,7 @@ function InputNode({ id, onDragStart, data }) {
             size="xs"
             variant="unstyled"
             textAlign="center"
+            placeholder="Label"
             position="absolute"
             left="40%"
             top="70%"

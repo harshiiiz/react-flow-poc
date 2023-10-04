@@ -28,6 +28,7 @@ function DiamondNode({ id, onDragStart, data }) {
             justifyContent={"center"}
             display={"flex"}
             w={"auto"}
+            placeholder="Label"
             wordwrap="break-word"
             zIndex="1000"
             wordBreak={"break-all"}

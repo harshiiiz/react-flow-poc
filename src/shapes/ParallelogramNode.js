@@ -25,7 +25,7 @@ function ParallelogramNode({ id, onDragStart, data }) {
             textAlign="center"
             display={"flex"}
             justifyContent={"center"}
-            
+            placeholder="Label"
             w={"auto"}
             wordwrap="break-word"
             zIndex="1000"

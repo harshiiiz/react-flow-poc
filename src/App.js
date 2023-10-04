@@ -18,7 +18,7 @@ import ContextMenu from "./ContextMenu";
 import CircleNode from "./shapes/CircleNode.js";
 import PentagonNode from "./shapes/PentagonNode.js";
 import DiamondNode from "./shapes/DiamondNode";
-import { Button, Flex, Image, Heading } from "@chakra-ui/react";
+import { Button, Flex, Image, Heading,Text } from "@chakra-ui/react";
 import GroupNode from "./shapes/GroupNode.js";
 import RectangleNode from "./shapes/RectangleNode";
 import ParallelogramNode from "./shapes/ParallelogramNode";
@@ -58,7 +58,7 @@ function Flow() {
     {
       id: "1",
       position: { x: 10, y: 70 },
-  
+
       data: {
         onResize: (height, heightChange) =>
           handleFirstGroupNodeResize(height, heightChange),
@@ -72,6 +72,7 @@ function Flow() {
         border: "none",
       },
       draggable: false,
+      parentNode: undefined,
     },
   ];
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -81,9 +82,6 @@ function Flow() {
   const [menu, setMenu] = useState(null);
   const [edgemenu, setEdgeMenu] = useState(null);
   const lastNodePosition = useRef({ x: 0, y: 0 });
-  const flowName = "Flow";
-  const [flowname, setFlowname] = useState(flowName);
-  console.log(flowname)
   let id = 0;
   const handleFirstGroupNodeResize = (height, heightChange) => {
     setNodes((prevElements) => {
@@ -95,22 +93,20 @@ function Flow() {
       const groupNodesBelow = prevElements
         .filter(
           (el) =>
-            el.type === "group" &&
-            el.id !== id &&
-            el.position.y > height.y
+            el.type === "group" && el.id !== id && el.position.y > height.y
         )
-        .sort((a, b) => a.position.y - b.position.y); 
-     // console.log(groupNodesBelow);
-      
+        .sort((a, b) => a.position.y - b.position.y);
+      // console.log(groupNodesBelow);
+
       let offsetY = heightChange + height.y + 326 + 10;
       //console.log(offsetY);
       groupNodesBelow.forEach((groupNode) => {
         groupNode.position.y = offsetY;
-        offsetY += groupNode.style.height + 10; 
+        offsetY += groupNode.style.height + 10;
       });
       return prevElements;
     });
-  }
+  };
   const onConnect = useCallback(
     (params) => {
       const edgeWithArrow = {
@@ -186,7 +182,6 @@ function Flow() {
           position,
           fontSize: 12,
           data: {
-            label: type === "input" ? "input" : "title",
             editable: true,
           },
           style: {
@@ -359,7 +354,7 @@ function Flow() {
 
   //   restoreFlow();
   // }, [setNodes, setEdges]);
-  
+
   const onDownloadJson = () => {
     const flow = reactFlowInstance.toObject();
     const simplifiedData = simplifyAndArrange(flow);
@@ -373,7 +368,7 @@ function Flow() {
     link.click();
     URL.revokeObjectURL(url);
   };
-  
+
   const addNode = useCallback(
     (type = "default", parentGroup) => {
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
@@ -398,8 +393,7 @@ function Flow() {
             y: lastNodePosition.current.y + 100,
           },
           data: {
-            label: "Parent " + id,
-            value: flowName,
+            editable: true,
             id,
           },
         };
@@ -412,56 +406,40 @@ function Flow() {
             );
           newNode.position.y =
             lastGroupNode.position.y + lastGroupNode.style.height + 10;
-            const onChange = (event) => {
-              setNodes((nds) =>
-                nds.map((node) => {
-                  const color = event.target.value;
-          
-                  setFlowname(color);
-          
-                  return {
-                    ...node,
-                    data: {
-                      ...node.data,
-                      flowName: color,
-                    },
-                  };
-                })
-              );
-            };
-            const handleGroupNodeResize = (height, heightChange) => {
-              setNodes((prevElements) => {
-                const id = prevElements.find(
-                  (el) => el.type === "group" && el.position.y === height.y
-                ).id;
-                // console.log(prevElements, id);
-          
-                const groupNodesBelow = prevElements
-                  .filter(
-                    (el) =>
-                      el.type === "group" &&
-                      el.id !== id &&
-                      el.position.y > height.y
-                  )
-                  .sort((a, b) => a.position.y - b.position.y); 
-               // console.log(groupNodesBelow);
-                
-                let offsetY = heightChange + height.y + 326 + 10;
-                //console.log(offsetY);
-                groupNodesBelow.forEach((groupNode) => {
-                  groupNode.position.y = offsetY;
-                  offsetY += groupNode.style.height + 10; 
-                });
-                return prevElements;
+
+          const handleGroupNodeResize = (height, heightChange) => {
+            setNodes((prevElements) => {
+              const id = prevElements.find(
+                (el) => el.type === "group" && el.position.y === height.y
+              ).id;
+              // console.log(prevElements, id);
+
+              const groupNodesBelow = prevElements
+                .filter(
+                  (el) =>
+                    el.type === "group" &&
+                    el.id !== id &&
+                    el.position.y > height.y
+                )
+                .sort((a, b) => a.position.y - b.position.y);
+              // console.log(groupNodesBelow);
+
+              let offsetY = heightChange + height.y + 326 + 10;
+              //console.log(offsetY);
+              groupNodesBelow.forEach((groupNode) => {
+                groupNode.position.y = offsetY;
+                offsetY += groupNode.style.height + 10;
               });
-            };
+              return prevElements;
+            });
+          };
 
           Object.assign(newNode, {
             type,
             data: {
               ...newNode.data,
-              onChange: onChange,
-              flowName,
+
+              editable: true,
               onResize: (height, heightChange) =>
                 handleGroupNodeResize(height, heightChange),
             },
@@ -472,6 +450,7 @@ function Flow() {
               border: "none",
               backgroundColor: "#F0EAFD",
             },
+
             parentNode: parentGroup,
           });
 
@@ -593,9 +572,15 @@ function Flow() {
                     borderRadius={2.5}
                     src="https://bit.ly/dan-abramov"
                     alt="logo"
-
                   />
-                  <Heading fontSize={"16px"} ml={"12px"} color={"#232323"} fontStyle={"normal"} fontFamily={"Gotham HTF Book"} fontWeight={550}>
+                  <Heading
+                    fontSize={"16px"}
+                    ml={"12px"}
+                    color={"#232323"}
+                    fontStyle={"normal"}
+                    fontFamily={"Gotham HTF Book"}
+                    fontWeight={550}
+                  >
                     BLE Speaker
                   </Heading>
                   <Button
@@ -604,8 +589,10 @@ function Flow() {
                     border={"1px solid #D9D9D9"}
                     borderRadius={"4px"}
                     fontFamily={"Gotham HTF Book"}
+                    fontWeight={600}
                   >
-                    STM 4324324
+                    STM &nbsp;
+                    <Text fontWeight={400}>4324324</Text>
                   </Button>
                 </Flex>
 

@@ -38,7 +38,7 @@
     for (const nodeId in nodeDict) {
         const node = nodeDict[nodeId];
         const parentNodeId = json.nodes.find(n => n.id === nodeId)?.parentNode;
-        const flowName=json.nodes.find(n => n.id === nodeId)?.data.flowName
+        const flowName=json.nodes.find(n => n.id === parentNodeId )?.data.label
 
         if (parentNodeId) {
             if (!flows[parentNodeId]) {

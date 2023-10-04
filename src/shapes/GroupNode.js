@@ -1,5 +1,5 @@
-import { Input } from "@chakra-ui/react";
-import React, { useCallback } from "react";
+import { Box, Input } from "@chakra-ui/react";
+import React, { useCallback, useState } from "react";
 import { NodeResizeControl, Handle, Position } from "reactflow";
 const controlStyle = {
   background: "transparent",
@@ -7,26 +7,41 @@ const controlStyle = {
 };
 
 const GroupNode = ({ data }) => {
-  const handleResize = useCallback((width, height) => {
-   
-    const prevHeight = 326;
-    const heightChange = height.height - prevHeight;
-    data.onResize( height,heightChange);
-   // console.log(height, prevHeight, heightChange,height.y);
-    return heightChange;
-  }, [data]);
+  const [nodeName, setNodeName] = useState(data?.label || "");
+  const handleResize = useCallback(
+    (width, height) => {
+      const prevHeight = 326;
+      const heightChange = height.height - prevHeight;
+      data.onResize(height, heightChange);
+      // console.log(height, prevHeight, heightChange,height.y);
+      return heightChange;
+    },
+    [data]
+  );
 
   return (
     <>
-      <div className="group-title">
+      <Box position="relative">
         <Input
+          value={nodeName}
+          onChange={(e) => setNodeName(e.target.value)}
+          onBlur={() => {
+            // Update the label in the data object when input loses focus
+            data.label = nodeName;
+          }}
+          size="xs"
+          variant="unstyled"
           placeholder="Flow Name"
-          value={data.FlowName}
-          onChange={data.onChange}
-          size={"xs"}
+          display={"flex"}
           fontFamily={"Gotham HTF Book"}
+          justifyContent={"center"}
+          w={"auto"}
+          zIndex="1000"
+          
+          color={"black"}
+          overflow={"hidden"}
         />
-      </div>
+      </Box>
       <NodeResizeControl
         style={controlStyle}
         minWidth={100}

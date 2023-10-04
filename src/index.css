@@ -22,7 +22,9 @@ input {
   border-radius: 5px;
   background: white;
 }
-
+.stm.spantag{
+  font-weight: 100;
+}
 .dndnode.pentagon,
 .dndnode.square,
 .dndnode.circle,
